@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
+
+// 导入 Home City  组件 index.js文件自动识别
+import Home from './pages/Home'
+import City from './pages/City/index'
 // 如何解决 警告
 import 'antd-mobile/dist/antd-mobile.css'
-import { Button } from 'antd-mobile'
 import './index.scss'
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Button type="primary">你好我的react</Button>
-      </div>
+      <>
+        <Route path="/home" component={Home} />
+        <Route path="/city" component={City} />
+      </>
     )
   }
 }

@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background-color: skyblue;
+}
+
+body {
+  font-family: 'Microsoft YaHei', '宋体', Tahoma, Arial, sans-serif;
+
+  color: #333;
+}
+#tab-bar.demo {
+  display: flex;
+  flex-direction: column;
+}
+#tab-bar .demoName {
+  height: 40px;
+}
+#tab-bar .demo-preview-item .am-tab-bar {
+  background-color: white;
+}
+.home {
+  // height: 500px;
+  // background-color: pink;
+  .iconfont {
+    font-size: 20px;
+  }
+}

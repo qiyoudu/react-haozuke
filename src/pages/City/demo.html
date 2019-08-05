@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // function sad(params) {
+      //   console.log(1);
+
+      // }
+      var sad = function() {
+        console.log(1)
+      }
+      sad()
+      var arr = [
+        { lable: '北京', value: '', short: 'bj' },
+        { lable: '上海', value: '', short: 'sh' },
+        { lable: '广州', value: '', short: 'gz' },
+        { lable: '宝鸡', value: '', short: 'bj' }
+      ]
+      // 需求 得到的数据的格式
+      //  {
+      //     a: [
+      //         {label: '安庆', value:''}
+      //     ],
+      //     b：[
+      //     	{label: '北京', value: ''},
+      //         {label: '保定', value: ''}
+      //     ]
+      // }
+
+      var obj = {}
+      //   arr[i].short
+      arr.forEach(e => {
+        //  首字母作为键名
+        const key = e.short.slice(0, 1)
+        // 如果 这个对象中不在存在这个键名就创建一个 键名的数组 a :[]
+        if (!obj[key]) {
+          obj[key] = []
+        }
+        // 存在 就把这个对象放入这个数组(键名为缩写)中去
+        obj[key].push(e)
+      })
+      console.log(obj)
+
+      // Object.keys(obj)  可以把对象中的键名取出来放入一个数组中
+      console.log(Object.keys(obj))
+      // arr.sort()  方法是排序 不传参数是 是按拼音来排序的
+      console.log(Object.keys(obj).sort())
+    </script>
+  </body>
+</html>

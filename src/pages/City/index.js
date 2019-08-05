@@ -5,7 +5,7 @@ import axios from 'axios'
 class City extends React.Component {
   async area() {
     const res = await axios.get('http://localhost:8080/area/city?level=1')
-    console.log(res)
+    // console.log(res)
 
     // 存储 城市列表
     const cityList = {}
@@ -23,7 +23,7 @@ class City extends React.Component {
       // 这个属性名的数组中 加上e
       cityList[key].push(e)
     })
-    console.log(cityList)
+    // console.log(cityList)
     // 按照 字母顺序排列
     const cityIndex = Object.keys(cityList).sort()
     console.log(cityIndex)

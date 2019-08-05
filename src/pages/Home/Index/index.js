@@ -27,7 +27,7 @@ class Index extends React.Component {
     imgHeight: 212,
     // 轮播图数据还没有加载完成
     isLoaded: false,
-    cityName: '北京'
+    cityName: '芜湖'
   }
   async getSwipers() {
     const res = await axios.get('http://localhost:8080/home/swiper')

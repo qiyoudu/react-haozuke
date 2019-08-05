@@ -42,7 +42,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props)
     // this.props 和 props是一样的
-    console.log(this.props === props)
+    // console.log(this.props === props)
 
     this.state = {
       // 一进入页面选中的按钮  对应了四个选中的名字 red blue yellow ...

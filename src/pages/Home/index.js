@@ -5,7 +5,6 @@ import Index from './Index/index.js'
 import House from './House'
 import News from './News'
 import My from './My'
-
 import './index.scss'
 // 按需加载
 import TabBar from 'antd-mobile/es/tab-bar'

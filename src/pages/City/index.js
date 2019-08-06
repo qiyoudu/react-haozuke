@@ -3,90 +3,91 @@ import React from 'react'
 import { NavBar, Icon } from 'antd-mobile'
 // 导入样式
 import 'react-virtualized/styles.css'
-// // 导入 list组件
-import { List } from 'react-virtualized'
+// // 导入 list组件  AutiSizer组件
+import { List, AutoSizer } from 'react-virtualized'
 // import要写在最上面
 import axios from 'axios'
 import './index.scss'
+import { getCurrentCity } from '../../utils'
 
-// // 假数据
-const list = Array.from(new Array(10000)).map(
-  (item, index) => `${index}-假数据展示`
-)
-const rowRenderer = function({
-  //fn(obj{return})?
-  key, // 唯一的key值
-  index, // 每一行的索引号
-  isScrolling, // 是否在滚动中
-  isVisible, // 是否可见
-  style // 样式对象
-}) {
-  return (
-    <div key={key} style={style} className="city">
-      <div className="title">A</div>
-      <div className="name">北京</div>
-    </div>
-  )
-}
 class City extends React.Component {
-  state = {
-    list: []
-  }
-  // rowRenderer = function({
-  //   //fn(obj{return})?
-  //   key, // 唯一的key值
-  //   index, // 每一行的索引号
-  //   isScrolling, // 是否在滚动中
-  //   isVisible, // 是否可见
-  //   style // 样式对象
-  // }) {
-  //   return (
-  //     <div key={key} style={style}>
-  //       {this.state.list[index]}
-  //     </div>
-  //   )
-  // }
-
-  async area() {
-    const res = await axios.get('http://localhost:8080/area/city?level=1')
-    // console.log(res)
-
-    // 存储 城市列表
-    const cityList = {}
-
-    // 遍历list
-    const { body } = res.data
-    // console.log(list)
-    const list = Array.from(body).map((item, index) => `${index}-假数据展示`)
-    this.setState({
-      list
-    })
-    body.forEach(e => {
+  formatData(list) {
+    const cityObj = {}
+    list.forEach(e => {
       const key = e.short.slice(0, 1)
       // 不存在这个字母开头的属性名  创建一个新数组
-      if (!cityList[key]) {
-        cityList[key] = []
+      if (!cityObj[key]) {
+        cityObj[key] = []
       }
       // 这个属性名的数组中 加上e
-      cityList[key].push(e)
+      cityObj[key].push(e)
     })
-    // console.log(cityList)
-    // 按照 字母顺序排列
-    const cityIndex = Object.keys(cityList).sort()
-    console.log(cityIndex)
-
-    // 添加热门城市的数据
-    const hots = await axios.get('http://localhost:8080/area/hot')
-    console.log(hots)
-    // 封装 获取当前定位城市的功能
+    const shortList = Object.keys(cityObj).sort()
+    return {
+      cityObj,
+      shortList
+    }
   }
+  async getCityList() {
+    const res = await axios.get('http://localhost:8080/area/city?level=1')
+    const { body } = res.data
+    const { cityObj, shortList } = this.formatData(body)
+    // 添加热门城市
+    const hotRes = await axios.get('http://localhost:8080/area/hot')
+    shortList.unshift('hot')
+    cityObj.hot = hotRes.data.body
+    // 再添加一个当前城市
+    const city = await getCurrentCity()
+
+    shortList.unshift('#')
+    cityObj['#'] = [city]
+    console.log(cityObj)
+    console.log(shortList)
+
+    // 替换state中的值
+    this.setState({
+      cityObj,
+      shortList
+    })
+  }
+
+  rowRenderer = ({
+    key, // 唯一的key值
+    index, // 每一行的索引号
+    style // 样式对象
+  }) => {
+    // 箭头函数 或者 bind解决this指向问题
+    // console.log(this)
+    // 通过下标可以获取首字母
+    const letter = this.state.shortList[index]
+    // 根据首字母获取到需要渲染的城市列表
+    const list = this.state.cityObj[letter] //整个list是一行 一共是21行
+    // 执行了 21 次
+    // console.log(list)
+
+    return (
+      <div key={key} style={style} className="city-item">
+        <div className="title">{letter}</div>
+        {list.map(item => (
+          <div key={item.value} className="name">
+            {item.label}
+          </div>
+        ))}
+      </div>
+    )
+  }
+  state = {
+    shortList: [],
+    cityObj: {}
+  }
+
   componentDidMount() {
     // 获取城市列表数据
-    this.area()
+    this.getCityList()
   }
   render() {
     return (
-      <div>
+      <>
         {/* 导航组件 */}
         <NavBar
           mode="light"
@@ -95,14 +96,18 @@ class City extends React.Component {
         >
           NavBar
         </NavBar>
-        <List
-          width={300}
-          height={300}
-          rowCount={this.state.list.length}
-          rowHeight={20}
-          rowRenderer={rowRenderer}
-        />
-      </div>
+        <AutoSizer>
+          {({ width, height }) => (
+            <List
+              width={width}
+              height={height}
+              rowCount={this.state.shortList.length}
+              rowHeight={100}
+              rowRenderer={this.rowRenderer()}
+            />
+          )}
+        </AutoSizer>
+      </>
     )
   }
 }

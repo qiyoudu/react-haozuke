@@ -8,6 +8,9 @@ import Nav3 from '../../../assert/images/nav-3.png'
 import Nav4 from '../../../assert/images/nav-4.png'
 import './index.scss'
 import { Link } from 'react-router-dom'
+// 导入函数库
+// import '../../../utils/function'
+import { getCurrentCity } from '../../../utils'
 const navList = [
   { title: '整租', img: Nav1, path: '/home/house' },
   { title: '合租', img: Nav2, path: '/home/house' },
@@ -66,33 +69,44 @@ class Index extends React.Component {
       })
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     this.getSwipers()
     this.getGroups()
     this.getMessages()
 
-    // 调用百度地图的api，获取当前的城市
-    var myCity = new window.BMap.LocalCity()
-    myCity.get(async result => {
-      // 城市名字
-      const name = result.name
-      // 发送ajax请求，获取城市的详细信息
-      const res = await axios.get('http://localhost:8080/area/info', {
-        params: {
-          name: name
-        }
-      })
-
-      // 第一步：把整个结果存储到本地缓存中
-      // 第二步：显示城市的名字
-      const { status, body } = res.data
-      if (status === 200) {
-        localStorage.setItem('current_city', JSON.stringify(body))
-      }
-      this.setState({
-        cityName: body.label
-      })
+    const { label } = await getCurrentCity()
+    // console.log(label)
+    this.setState({
+      cityName: label
     })
+
+    // 调用百度地图的api，获取当前的城市
+    // var myCity = new window.BMap.LocalCity()
+    // // 直接是获取不到的异步操作
+    // console.log(myCity)
+
+    // myCity.get(async result => {
+    //   console.log(result)
+
+    //   // 城市名字
+    //   const name = result.name
+    //   // 发送ajax请求，获取城市的详细信息
+    //   const res = await axios.get('http://localhost:8080/area/info', {
+    //     params: {
+    //       name: name
+    //     }
+    //   })
+
+    //   // 第一步：把整个结果存储到本地缓存中
+    //   // 第二步：显示城市的名字
+    //   const { status, body } = res.data
+    //   if (status === 200) {
+    //     localStorage.setItem('current_city', JSON.stringify(body))
+    //   }
+    //   this.setState({
+    //     cityName: body.label
+    //   })
+    // })
     // 获取地理位置信息
     // console.log('获取地理位置')
     // navigator.geolocation.getCurrentPosition(

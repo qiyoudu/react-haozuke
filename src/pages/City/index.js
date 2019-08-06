@@ -1,6 +1,4 @@
 import React from 'react'
-// import ReactDOM from 'react-dom'
-import { NavBar, Icon } from 'antd-mobile'
 // 导入样式
 import 'react-virtualized/styles.css'
 // // 导入 list组件  AutiSizer组件
@@ -9,12 +7,15 @@ import { List, AutoSizer } from 'react-virtualized'
 import axios from 'axios'
 import './index.scss'
 import { getCurrentCity } from '../../utils'
+// 导入头部组件
+import NavHeader from '../../common/NavHeader'
 
 class City extends React.Component {
   state = {
     shortList: [],
     cityObj: {},
-    currentIndex: 0
+    currentIndex: 0,
+    goIndex: 1
   }
   formatData(list) {
     const cityObj = {}
@@ -74,12 +75,19 @@ class City extends React.Component {
       <div key={key} style={style} className="city-item">
         <div className="title">{this.getName(letter)}</div>
         {list.map(item => (
-          <div key={item.value} className="name">
+          <div
+            onClick={() => this.changeCity(item)}
+            key={item.value}
+            className="name"
+          >
             {item.label}
           </div>
         ))}
       </div>
     )
+  }
+  changeCity = ({ label }) => {
+    console.log(label)
   }
   getName(letter) {
     if (letter === '#') {
@@ -90,11 +98,20 @@ class City extends React.Component {
       return letter.toUpperCase()
     }
   }
+  handelClick = v => {
+    this.setState({
+      goIndex: v
+    })
+  }
   rightMeau = () => {
     return (
       <ul className="city-index">
         {this.state.shortList.map((item, index) => (
-          <li key={item} className="city-index-item">
+          <li
+            onClick={() => this.handelClick(index)}
+            key={item}
+            className="city-index-item"
+          >
             <span
               className={
                 index === this.state.currentIndex ? 'index-active' : ''
@@ -135,13 +152,7 @@ class City extends React.Component {
       <div className="city">
         {this.rightMeau()}
         {/* 导航组件 */}
-        <NavBar
-          mode="light"
-          icon={<Icon type="left" />}
-          onLeftClick={() => this.props.history.go(-1)}
-        >
-          NavBar
-        </NavBar>
+        <NavHeader>这是第一个封装</NavHeader>
         <AutoSizer>
           {({ height, width }) => (
             <List
@@ -153,6 +164,10 @@ class City extends React.Component {
               rowRenderer={this.rowRenderer.bind(this)}
               // List上的属性
               onRowsRendered={this.findLetter.bind(this)}
+              // 点击对应的下标去对应的地方
+              scrollToIndex={this.state.goIndex}
+              // 配置滚动之后的显示选项
+              scrollToAlignment={'start'}
             />
           )}
         </AutoSizer>

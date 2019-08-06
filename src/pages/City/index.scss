@@ -2,17 +2,14 @@
   // background-color: pink;
   height: 100%;
 }
-body {
-  // background-color: skyblue;
-  // height: 100%;
-}
+
 .city {
   height: 100%;
   // background-color: pink;
   padding-top: 45px;
   &-index {
     position: fixed;
-    background-color: pink;
+    // background-color: pink;
     right: 0;
     height: 100%;
     width: 50px;
@@ -48,6 +45,13 @@ body {
     }
   }
   .index-active {
-    background-color: blue;
+    color: #fff;
+    background-color: #21b97a;
+    border-radius: 100%;
+    display: inline-block;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    line-height: 15px;
   }
 }

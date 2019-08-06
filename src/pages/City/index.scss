@@ -1,19 +1,35 @@
+#app {
+  // background-color: pink;
+  height: 100%;
+}
+body {
+  // background-color: skyblue;
+  // height: 100%;
+}
 .city {
   height: 100%;
+  // background-color: pink;
   padding-top: 45px;
-  .navBar {
+  &-index {
     position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 999;
-    background-color: #eee;
-    .icon-back,
-    .am-navbar-title {
-      color: #333;
+    background-color: pink;
+    right: 0;
+    height: 100%;
+    width: 50px;
+    z-index: 100;
+    text-align: center;
+    font-size: 14px;
+    &-item {
+      height: 4%;
     }
   }
-  // 城市列表
-  .city-item {
+  .am-navbar-light {
+    position: fixed;
+    z-index: 99;
+    width: 100%;
+    top: 0;
+  }
+  &-item {
     .title {
       font-size: 14px;
       padding: 10px 15px;
@@ -31,29 +47,7 @@
       cursor: pointer;
     }
   }
-  // 右侧索引
-  .city-index {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    right: 5px;
-    z-index: 999;
-    height: 90%;
-    box-sizing: border-box;
-    padding-top: 20px;
-    text-align: center;
-    .city-index-item {
-      flex: 1;
-    }
-    .index-active {
-      color: #fff;
-      background-color: #21b97a;
-      border-radius: 100%;
-      display: inline-block;
-      font-size: 12px;
-      width: 15px;
-      height: 15px;
-      line-height: 15px;
-    }
+  .index-active {
+    background-color: blue;
   }
 }

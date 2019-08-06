@@ -11,6 +11,11 @@ import './index.scss'
 import { getCurrentCity } from '../../utils'
 
 class City extends React.Component {
+  state = {
+    shortList: [],
+    cityObj: {},
+    currentIndex: 0
+  }
   formatData(list) {
     const cityObj = {}
     list.forEach(e => {
@@ -51,12 +56,12 @@ class City extends React.Component {
     })
   }
 
-  rowRenderer = ({
+  rowRenderer({
     key, // 唯一的key值
     index, // 每一行的索引号
     style // 样式对象
-  }) => {
-    // 箭头函数 或者 bind解决this指向问题
+  }) {
+    // 箭头函数 或者 bind解决this指向问题    如果需要传参不能使用{fn(x)} 因为这里面是函数返回的结果
     // console.log(this)
     // 通过下标可以获取首字母
     const letter = this.state.shortList[index]
@@ -67,7 +72,7 @@ class City extends React.Component {
 
     return (
       <div key={key} style={style} className="city-item">
-        <div className="title">{letter}</div>
+        <div className="title">{this.getName(letter)}</div>
         {list.map(item => (
           <div key={item.value} className="name">
             {item.label}
@@ -76,18 +81,59 @@ class City extends React.Component {
       </div>
     )
   }
-  state = {
-    shortList: [],
-    cityObj: {}
+  getName(letter) {
+    if (letter === '#') {
+      return '当前定位'
+    } else if (letter === 'hot') {
+      return '热门城市'
+    } else {
+      return letter.toUpperCase()
+    }
   }
+  rightMeau = () => {
+    return (
+      <ul className="city-index">
+        {this.state.shortList.map((item, index) => (
+          <li key={item} className="city-index-item">
+            <span
+              className={
+                index === this.state.currentIndex ? 'index-active' : ''
+              }
+            >
+              {index === 1 ? '热' : item.toUpperCase()}
+            </span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  computerHeight({ index }) {
+    // console.log(index)
 
+    const letter = this.state.shortList[index]
+    // 根据首字母获取到需要渲染的城市列表
+    const list = this.state.cityObj[letter] //整个list是一行 一共是21行
+    // 执行了 21 次
+    // console.log(list)
+    const rowHe = list.length * 50 + 36
+    return rowHe
+  }
+  findLetter({ startIndex }) {
+    // console.log(startIndex)
+    if (this.state.currentIndex !== startIndex) {
+      this.setState({
+        currentIndex: startIndex
+      })
+    }
+  }
   componentDidMount() {
     // 获取城市列表数据
     this.getCityList()
   }
   render() {
     return (
-      <>
+      <div className="city">
+        {this.rightMeau()}
         {/* 导航组件 */}
         <NavBar
           mode="light"
@@ -97,17 +143,20 @@ class City extends React.Component {
           NavBar
         </NavBar>
         <AutoSizer>
-          {({ width, height }) => (
+          {({ height, width }) => (
             <List
               width={width}
               height={height}
               rowCount={this.state.shortList.length}
-              rowHeight={100}
-              rowRenderer={this.rowRenderer()}
+              // 动态计算每行的高度 36+ list.length*50 index从哪里来  bind绑定this 返回并执行? 访问的是函数为什么会执行这个函数?  回去试一下render props的demo 找到bind(this)的Demo 谁帮我们执行了这个函数?
+              rowHeight={this.computerHeight.bind(this)}
+              rowRenderer={this.rowRenderer.bind(this)}
+              // List上的属性
+              onRowsRendered={this.findLetter.bind(this)}
             />
           )}
         </AutoSizer>
-      </>
+      </div>
     )
   }
 }

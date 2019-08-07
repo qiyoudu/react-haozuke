@@ -75,12 +75,12 @@ import axios from 'axios'
 const CURRENT_CITY = 'current_city'
 
 // 获取城市
-function getCity() {
+export function getCity() {
   return JSON.parse(localStorage.getItem(CURRENT_CITY))
 }
 
 // 设置城市
-function setCity(city) {
+export function setCity(city) {
   localStorage.setItem(CURRENT_CITY, JSON.stringify(city))
 }
 

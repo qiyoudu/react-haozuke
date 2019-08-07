@@ -6,16 +6,21 @@ import { List, AutoSizer } from 'react-virtualized'
 // import要写在最上面
 import axios from 'axios'
 import './index.scss'
-import { getCurrentCity } from '../../utils'
+// 精确导出
+import { getCurrentCity, setCity } from '../../utils'
 // 导入头部组件
 import NavHeader from '../../common/NavHeader'
-
+const cityArr = ['北京', '上海', '广州', '深圳']
 class City extends React.Component {
+  constructor(props) {
+    super(props)
+    // 创建Ref    由于在state中存储数据会存在性能消耗问题 ref也会更新组件...
+    this.listRef = React.createRef()
+  }
   state = {
     shortList: [],
     cityObj: {},
-    currentIndex: 0,
-    goIndex: 1
+    currentIndex: 0
   }
   formatData(list) {
     const cityObj = {}
@@ -88,6 +93,15 @@ class City extends React.Component {
   }
   changeCity = ({ label }) => {
     console.log(label)
+    // 判断点击的城市是否在 四个城市中  有保存到本地并返回上一页  没有提示 暂无房源信息
+    if (cityArr.includes(label)) {
+      // 存入本地
+      setCity(label)
+      // 返回上一页
+      this.props.history.push('/home')
+    } else {
+      console.log('不存在')
+    }
   }
   getName(letter) {
     if (letter === '#') {
@@ -98,11 +112,7 @@ class City extends React.Component {
       return letter.toUpperCase()
     }
   }
-  handelClick = v => {
-    this.setState({
-      goIndex: v
-    })
-  }
+
   rightMeau = () => {
     return (
       <ul className="city-index">
@@ -124,6 +134,12 @@ class City extends React.Component {
       </ul>
     )
   }
+
+  handelClick = index => {
+    // console.log(index)
+    // console.log(this.listRef.current)
+    this.listRef.current.scrollToRow(index)
+  }
   computerHeight({ index }) {
     // console.log(index)
 
@@ -143,9 +159,11 @@ class City extends React.Component {
       })
     }
   }
-  componentDidMount() {
-    // 获取城市列表数据
-    this.getCityList()
+  async componentDidMount() {
+    // 获取城市列表数据  async 修饰的函数返回的是promise对象
+    await this.getCityList()
+    // 计算一共的高度
+    this.listRef.current.measureAllRows()
   }
   render() {
     return (
@@ -158,6 +176,7 @@ class City extends React.Component {
             <List
               width={width}
               height={height}
+              ref={this.listRef}
               rowCount={this.state.shortList.length}
               // 动态计算每行的高度 36+ list.length*50 index从哪里来  bind绑定this 返回并执行? 访问的是函数为什么会执行这个函数?  回去试一下render props的demo 找到bind(this)的Demo 谁帮我们执行了这个函数?
               rowHeight={this.computerHeight.bind(this)}
@@ -165,7 +184,7 @@ class City extends React.Component {
               // List上的属性
               onRowsRendered={this.findLetter.bind(this)}
               // 点击对应的下标去对应的地方
-              scrollToIndex={this.state.goIndex}
+              // scrollToIndex={()=>this.handelClick}
               // 配置滚动之后的显示选项
               scrollToAlignment={'start'}
             />

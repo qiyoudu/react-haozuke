@@ -1,0 +1,16 @@
+.navBar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: #eee;
+}
+//am-icon am-icon-left am-icon-md
+// :global(.icon-back) {
+//   background: red;
+// }
+// 多了一个类名
+// NavHeader_icon-back__2ec9V am-icon am-icon-left am-icon-md
+.icon-back {
+  background: red;
+}

@@ -4,8 +4,11 @@ import React from 'react'
 import { NavBar, Icon } from 'antd-mobile'
 // 校验
 import PropTypes from 'prop-types'
-import './index.scss'
-export default class NavHeader extends React.Component {
+// import './index.scss'
+import styles from './index.module.scss'
+// 需要组件包装解决 解决点击去哪个组件报错问题 使用withRouter 高阶组件
+import { withRouter } from 'react-router-dom'
+class NavHeader extends React.Component {
   // 传入的children值校验
   static propTypes = {
     children: PropTypes.string.isRequired
@@ -13,9 +16,9 @@ export default class NavHeader extends React.Component {
   render() {
     return (
       <NavBar
-        className="navBar"
+        className={styles.navBar}
         mode="light"
-        icon={<Icon type="left" className="icon-back" />}
+        icon={<Icon type="left" className={styles['icon-back']} />}
         onLeftClick={() => this.props.history.go(-1)}
       >
         {this.props.children}
@@ -23,3 +26,4 @@ export default class NavHeader extends React.Component {
     )
   }
 }
+export default withRouter(NavHeader)

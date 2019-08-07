@@ -1,6 +1,11 @@
 import React from 'react'
 // import ReactDOM from 'react-dom'
-import './index.scss'
+// import './index.scss'
+import styles from './index.module.scss'
+
+import NavHeader from '../../common/NavHeader'
+console.log(styles)
+
 class Map extends React.Component {
   componentDidMount() {
     //访问container  直接访问全局变量 需要通过window
@@ -19,6 +24,7 @@ class Map extends React.Component {
     return (
       <div style={{ height: '100%' }}>
         <div className="map">
+          <NavHeader>这里是地图</NavHeader>
           <div id="container" />
         </div>
       </div>

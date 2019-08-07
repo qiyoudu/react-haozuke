@@ -5,11 +5,15 @@ import 'react-virtualized/styles.css'
 import { List, AutoSizer } from 'react-virtualized'
 // import要写在最上面
 import axios from 'axios'
-import './index.scss'
+// import './index.scss'
+// 使用styles 对象的形式的类名实现 作用域样式
+import styles from './index.module.scss'
 // 精确导出
 import { getCurrentCity, setCity } from '../../utils'
 // 导入头部组件
 import NavHeader from '../../common/NavHeader'
+console.log(styles)
+
 const cityArr = ['北京', '上海', '广州', '深圳']
 class City extends React.Component {
   constructor(props) {
@@ -52,8 +56,6 @@ class City extends React.Component {
 
     shortList.unshift('#')
     cityObj['#'] = [city]
-    console.log(cityObj)
-    console.log(shortList)
 
     // 替换state中的值
     this.setState({
@@ -77,13 +79,13 @@ class City extends React.Component {
     // console.log(list)
 
     return (
-      <div key={key} style={style} className="city-item">
-        <div className="title">{this.getName(letter)}</div>
+      <div key={key} style={style} className={styles['city-item']}>
+        <div className={styles.title}>{this.getName(letter)}</div>
         {list.map(item => (
           <div
             onClick={() => this.changeCity(item)}
             key={item.value}
-            className="name"
+            className={styles.name}
           >
             {item.label}
           </div>
@@ -92,7 +94,6 @@ class City extends React.Component {
     )
   }
   changeCity = ({ label }) => {
-    console.log(label)
     // 判断点击的城市是否在 四个城市中  有保存到本地并返回上一页  没有提示 暂无房源信息
     if (cityArr.includes(label)) {
       // 存入本地
@@ -115,16 +116,16 @@ class City extends React.Component {
 
   rightMeau = () => {
     return (
-      <ul className="city-index">
+      <ul className={styles['city-index']}>
         {this.state.shortList.map((item, index) => (
           <li
             onClick={() => this.handelClick(index)}
             key={item}
-            className="city-index-item"
+            className={styles['city-index-item']}
           >
             <span
               className={
-                index === this.state.currentIndex ? 'index-active' : ''
+                index === this.state.currentIndex ? styles['index-active'] : ''
               }
             >
               {index === 1 ? '热' : item.toUpperCase()}
@@ -147,7 +148,7 @@ class City extends React.Component {
     // 根据首字母获取到需要渲染的城市列表
     const list = this.state.cityObj[letter] //整个list是一行 一共是21行
     // 执行了 21 次
-    // console.log(list)
+    // console.log(list)-
     const rowHe = list.length * 50 + 36
     return rowHe
   }
@@ -167,10 +168,14 @@ class City extends React.Component {
   }
   render() {
     return (
-      <div className="city">
+      <div className={styles.city}>
         {this.rightMeau()}
-        {/* 导航组件 */}
-        <NavHeader>这是第一个封装</NavHeader>
+        {/* 导航组件  这里的类名加不上去*/}
+        <div className={styles.navBar}>
+          {' '}
+          <NavHeader>这是第一个封装</NavHeader>
+        </div>
+
         <AutoSizer>
           {({ height, width }) => (
             <List

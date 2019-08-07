@@ -12,7 +12,8 @@ import styles from './index.module.scss'
 import { getCurrentCity, setCity } from '../../utils'
 // 导入头部组件
 import NavHeader from '../../common/NavHeader'
-console.log(styles)
+// 导入轻提示组件
+import { Toast, WhiteSpace, WingBlank, Button } from 'antd-mobile'
 
 const cityArr = ['北京', '上海', '广州', '深圳']
 class City extends React.Component {
@@ -26,16 +27,21 @@ class City extends React.Component {
     cityObj: {},
     currentIndex: 0
   }
+  // 没有遮幕的轻提示
+  showToastNoMask() {
+    Toast.info('抱歉暂无房源', 2, null, false)
+  }
+
   formatData(list) {
     const cityObj = {}
-    list.forEach(e => {
-      const key = e.short.slice(0, 1)
-      // 不存在这个字母开头的属性名  创建一个新数组
-      if (!cityObj[key]) {
-        cityObj[key] = []
+    list.forEach(item => {
+      const key = item.short.slice(0, 1)
+      // 判断key在cityObj中是否存在
+      if (key in cityObj) {
+        cityObj[key].push(item)
+      } else {
+        cityObj[key] = [item]
       }
-      // 这个属性名的数组中 加上e
-      cityObj[key].push(e)
     })
     const shortList = Object.keys(cityObj).sort()
     return {
@@ -56,6 +62,8 @@ class City extends React.Component {
 
     shortList.unshift('#')
     cityObj['#'] = [city]
+    console.log(cityObj)
+    //console.log(shortList)
 
     // 替换state中的值
     this.setState({
@@ -93,15 +101,17 @@ class City extends React.Component {
       </div>
     )
   }
-  changeCity = ({ label }) => {
+  changeCity = v => {
     // 判断点击的城市是否在 四个城市中  有保存到本地并返回上一页  没有提示 暂无房源信息
-    if (cityArr.includes(label)) {
-      // 存入本地
-      setCity(label)
+    if (cityArr.includes(v.label)) {
+      // 存入本地 需要是一个对象的形式! 有value label..
+      setCity(v)
       // 返回上一页
       this.props.history.push('/home')
     } else {
-      console.log('不存在')
+      // console.log('不存在')
+      // 使用轻提示
+      this.showToastNoMask()
     }
   }
   getName(letter) {
@@ -166,16 +176,14 @@ class City extends React.Component {
     // 计算一共的高度
     this.listRef.current.measureAllRows()
   }
+
   render() {
     return (
       <div className={styles.city}>
         {this.rightMeau()}
         {/* 导航组件  这里的类名加不上去*/}
-        <div className={styles.navBar}>
-          {' '}
-          <NavHeader>这是第一个封装</NavHeader>
-        </div>
 
+        <NavHeader>这是第一个封装</NavHeader>
         <AutoSizer>
           {({ height, width }) => (
             <List

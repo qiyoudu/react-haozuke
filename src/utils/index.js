@@ -1,37 +1,3 @@
-// import axios from 'axios'
-
-// const CURRENT_CITY_KEY = 'current_city'
-
-// export function getCurrentCity() {
-//   const cityInfo = localStorage.getItem(CURRENT_CITY_KEY)
-
-//   if (cityInfo) {
-//     // Promise的静态方法  返回一个结果为成功的promise对象
-//     Promise.resolve(JSON.parse(cityInfo))
-//     return
-//   }
-//   // 如果没有  获取当前的城市信息
-//   return new Promise((resolve, reject) => {
-//     const myCity = new window.BMap.LocalCity() //异步的吗?
-//     console.log(myCity)
-
-//     myCity.get(res => {
-//       const cityName = res.name
-//       axios
-//         .get(`http://localhost:8080/area/info?name=${cityName}`)
-//         .then(res => {
-//           const cityInfo = res.data.body
-//           // 存储
-//           localStorage.setItem(CURRENT_CITY_KEY, cityInfo)
-//           resolve(cityInfo)
-//         })
-//         .catch(err => {
-//           reject(err)
-//         })
-//     })
-//   })
-// }
-
 // 这个模块会导出很多的一些工具函数
 
 /* 

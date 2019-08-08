@@ -9,8 +9,7 @@ const BMap = window.BMap
 // 在react中，如果想要直接访问全局变量，需要通过window
 class Map extends React.Component {
   state = {
-    citys: [],
-    map: ''
+    citys: []
   }
   async componentDidMount() {
     // 获取当前的城市
@@ -26,36 +25,6 @@ class Map extends React.Component {
         if (point) {
           map.centerAndZoom(point, 11)
           // 这是添加标注的  添加文字标签
-          var opts = {
-            position: point, // 指定文本标注所在的地理位置
-            offset: new BMap.Size(30, -30) //设置文本偏移量
-          }
-          // 导入对应的样式
-          var label = new BMap.Label(
-            `<div class=${styles.bubble}>
-            <p class=${styles.name}>普通新区</p>
-            <p>388套</p>
-          </div>`,
-            opts
-          )
-          // 给文本覆盖物注册事件
-          label.addEventListener('click', function(params) {
-            console.log(1)
-          })
-
-          // 创建文本标注对象
-          // 修改样式
-          label.setStyle({
-            fontSize: '12px',
-            height: '20px',
-            lineHeight: '20px',
-            fontFamily: '微软雅黑',
-            border: '0px solid transparent',
-            backgroundColor: 'transparent'
-          })
-          map.addOverlay(label)
-          // console.log(this.state.citys)
-          this.renderRooms()
 
           // 添加控件  里面参数是未定义?
           map.addControl(
@@ -76,15 +45,57 @@ class Map extends React.Component {
       }
     })
     const citys = resRoom.data.body
-    console.log(citys)
+    // console.log(citys)
     // 设置state中的数据
-    this.setState({
-      citys
-    })
+    this.setState(
+      {
+        citys
+      },
+      () => {
+        this.state.citys.forEach(item => {
+          // console.log(item)
+          const point = new BMap.Point(
+            item.coord.longitude,
+            item.coord.latitude
+          )
+          var opts = {
+            // 指定文本标注所在的地理位置
+            position: point,
+            // 设置文本x轴和y轴的偏移量
+            offset: new BMap.Size(-35, -35)
+          }
+          // 创建文本标注对象
+          var label = new BMap.Label(
+            `<div class="${styles.bubble}">
+                <p class="${styles.name}">${item.label}</p>
+                <p>${item.count}套</p>
+              </div>`,
+            opts
+          )
+          // 设置label的样式
+          label.setStyle({
+            cursor: 'pointer',
+            border: '0px solid rgb(255, 0, 0)',
+            padding: '0px',
+            whiteSpace: 'nowrap',
+            fontSize: '12px',
+            color: 'rgb(255, 255, 255)',
+            textAlign: 'center'
+          })
+          // 把文字覆盖物添加到地图上
+          map.addOverlay(label)
+
+          // 给label注册事件
+          label.addEventListener('click', function() {
+            console.log(item.value)
+          })
+        })
+      }
+    )
   }
-  renderRooms = () => {
-    console.log(this.state.citys)
-  }
+  // renderRoom=()=>{
+
+  // }
   //class NavHeader_navBar__3VUdG am-navbar am-navbar-light
   render() {
     return (

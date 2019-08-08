@@ -75,7 +75,7 @@ class Index extends React.Component {
 
     const city = await getCurrentCity()
     // 如何获取到一个 对象? 对于本地的缓存 写错之后要清除缓存
-    console.log(city)
+    // console.log(city)
     this.setState({
       cityName: city.label
     })

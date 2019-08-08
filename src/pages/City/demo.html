@@ -7,11 +7,18 @@
     <title>Document</title>
   </head>
   <body>
+    <button onclick="fn()">点哦我</button>
     <script>
       // function sad(params) {
       //   console.log(1);
 
       // }
+      // 点击事件中 fn() 不是执行函数吗  看函数里面做了什么 在控制台打印了 1 return不是打印 打印这个函数的结果才会在浏览器上显示
+      function fn(params) {
+        console.log(1)
+        return '哥哥'
+      }
+
       var sad = function() {
         console.log(1)
       }

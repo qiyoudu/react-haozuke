@@ -13,7 +13,7 @@ import { getCurrentCity, setCity } from '../../utils'
 // 导入头部组件
 import NavHeader from '../../common/NavHeader'
 // 导入轻提示组件
-import { Toast, WhiteSpace, WingBlank, Button } from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 
 const cityArr = ['北京', '上海', '广州', '深圳']
 class City extends React.Component {
@@ -62,7 +62,7 @@ class City extends React.Component {
 
     shortList.unshift('#')
     cityObj['#'] = [city]
-    console.log(cityObj)
+    // console.log(cityObj)
     //console.log(shortList)
 
     // 替换state中的值
@@ -104,7 +104,7 @@ class City extends React.Component {
   changeCity = v => {
     // 判断点击的城市是否在 四个城市中  有保存到本地并返回上一页  没有提示 暂无房源信息
     if (cityArr.includes(v.label)) {
-      // 存入本地 需要是一个对象的形式! 有value label..
+      // 存入本地 复杂数据类型需要转成JSON格式的
       setCity(v)
       // 返回上一页
       this.props.history.push('/home')
@@ -174,7 +174,7 @@ class City extends React.Component {
     // 获取城市列表数据  async 修饰的函数返回的是promise对象
     await this.getCityList()
     // 计算一共的高度
-    this.listRef.current.measureAllRows()
+    this.listRef.current.measureAllRows('')
   }
 
   render() {

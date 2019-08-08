@@ -6,6 +6,7 @@ import styles from './index.module.scss'
 import { getCurrentCity } from '../../utils'
 import Axios from 'axios'
 const BMap = window.BMap
+
 // 在react中，如果想要直接访问全局变量，需要通过window
 class Map extends React.Component {
   state = {
@@ -13,12 +14,14 @@ class Map extends React.Component {
   }
   async componentDidMount() {
     // 获取当前的城市
+
     const res = await getCurrentCity()
     const { label, value } = res
+    // 将地址解析结果显示到地图上 调整视野
     // 地址解析器获取经纬度
+
     const map = new BMap.Map('container')
     const myGeo = new BMap.Geocoder()
-    // 将地址解析结果显示到地图上 调整视野
     myGeo.getPoint(
       label,
       point => {
@@ -52,6 +55,7 @@ class Map extends React.Component {
         citys
       },
       () => {
+        // 如何把这段函数提取出去? map找不到
         this.state.citys.forEach(item => {
           // console.log(item)
           const point = new BMap.Point(
@@ -86,8 +90,18 @@ class Map extends React.Component {
           map.addOverlay(label)
 
           // 给label注册事件
-          label.addEventListener('click', function() {
+          label.addEventListener('click', () => {
+            // console.log(this)
             console.log(item.value)
+
+            // console.log(item.value)  发送ajax
+            // const res = await Axios.get('http://localhost:8080/area/map', {
+            //   params: {
+            //     id: item.value
+            //   }
+            // })
+
+            // console.log(res)
           })
         })
       }

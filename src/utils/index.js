@@ -12,31 +12,6 @@
 */
 import axios from 'axios'
 
-// export function getCurrentCity() {
-//   const city = localStorage.getItem('current_city')
-
-//   if (!city) {
-//     // 缓存中没有城市数据
-//     const myCity = new window.BMap.LocalCity()
-//     myCity.get(async result => {
-//       const name = result.name
-//       // 发送ajax请求，获取详细信息
-//       const res = await axios.get('http://localhost:8080/area/info', {
-//         params: {
-//           name: name
-//         }
-//       })
-//       console.log(res.data.body)
-//       // 存储到本地缓存
-//       localStorage.setItem('current_city', JSON.stringify(res.data.body))
-
-//       // 返回这个数据
-
-//     })
-//   } else {
-//     // 缓存中有城市数据， 直接返回这个城市数据即可
-//   }
-// }
 // 不会改变的量：常量
 const CURRENT_CITY = 'current_city'
 

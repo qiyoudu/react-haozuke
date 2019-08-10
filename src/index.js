@@ -6,8 +6,6 @@ import 'antd-mobile/dist/antd-mobile.css'
 import './assets/fonts/iconfont.css'
 // 引入scss
 import './index.scss'
-// 引入 ant 组件
-
 // 引入App
 import App from './App'
 ReactDOM.render(

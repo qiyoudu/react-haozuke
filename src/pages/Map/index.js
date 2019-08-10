@@ -4,6 +4,7 @@ import styles from './index.module.scss'
 // console.log(styles)
 import { getCurrentCity } from '../../utils'
 import Axios from 'axios'
+import { Toast } from 'antd-mobile'
 const BMap = window.BMap
 
 // 在react中，如果想要直接访问全局变量，需要通过window
@@ -56,14 +57,18 @@ class Map extends React.Component {
     // 获取到城市id
     // console.log(id)
     // 发送ajax 获取到该城市下的所有房源
+    // 创建一个 不会关闭的 loading
+    Toast.loading('loading...', 0)
     const res = await Axios.get(`http://localhost:8080/area/map?id=${id}`)
-    // console.log(res)
+
     // 获取下一级渲染的方式 和 放大级别
     const { nextZoom, type } = this.getTypeAndZoom()
     const citys = res.data.body
     citys.forEach(e => {
       this.createOverlays(e, type, nextZoom)
     })
+    // 创建完成 关闭 loading
+    Toast.hide()
   }
   createOverlays(e, type, nextZoom) {
     // 需要判断渲染类型和 本次放大的级别
@@ -100,7 +105,7 @@ class Map extends React.Component {
     this.map.addOverlay(label)
     // 注册点击事件
     label.addEventListener('click', () => {
-      console.log(e.value, nextZoom)
+      // console.log(e.value, nextZoom)
       // 继续渲染下级的内容
       this.renderOverlays(e.value)
       // 清空覆盖物  有报错bug  在延时器中清除 不影响功能 具体百度查询
@@ -139,20 +144,26 @@ class Map extends React.Component {
     this.map.addOverlay(label)
     // 注册点击事件
     label.addEventListener('click', element => {
-      // 把地图放到最中间
-      this.map.centerAndZoom(point, nextZoom)
       // 获取 房源列表 百度地图监听事件没有支持 async 把函数调出去
       this.getHouseList(e)
+      // 添加滑动的效果 移动到上面可视区的中间  向左向上移动 负值
+      let x = window.innerWidth / 2 - element.changedTouches[0].clientX
 
-      console.log(element)
+      let y =
+        (window.innerHeight - 300 - 45) / 2 - element.changedTouches[0].clientY
+
+      this.map.panBy(x, y)
+      // console.log(element)
     })
   }
   async getHouseList(e) {
+    // 创建loading
+    Toast.loading('loading...', 0)
     const res = await Axios.get(
       `http://localhost:8080/houses?cityId=${e.value}`
     )
-    console.log(res)
-
+    // 关闭loading
+    Toast.hide()
     this.setState({
       isShow: true,
       houses: res.data.body.list

@@ -7,6 +7,8 @@ import Nav3 from '../../../assets/images/nav-3.png'
 import Nav4 from '../../../assets/images/nav-4.png'
 import './index.scss'
 import { Link } from 'react-router-dom'
+// 导入 头部的组件
+import SearchHeader from '../../../common/SearchHeader'
 // 导入API    BASEURL基础地址
 import { getCurrentCity, API, BASE_URL } from '../../../utils'
 const navList = [
@@ -115,31 +117,7 @@ class Index extends React.Component {
     )
   }
   renderSearch() {
-    return (
-      <Flex className="search-box">
-        <Flex className="search-form">
-          <div
-            className="location"
-            onClick={() => this.props.history.push('/city')}
-          >
-            <span className="name">{this.state.cityName}</span>
-            <i className="iconfont icon-arrow"> </i>
-          </div>
-          <div
-            className="search-input"
-            onClick={() => this.props.history.push('/search')}
-          >
-            <i className="iconfont icon-seach" />
-            <span className="text">请输入小区地址</span>
-          </div>
-        </Flex>
-        {/* 地图小图标 */}
-        <i
-          className="iconfont icon-map"
-          onClick={() => this.props.history.push('/map')}
-        />
-      </Flex>
-    )
+    return <SearchHeader cityName={this.state.cityName} />
   }
   renderNav() {
     return (

@@ -2,7 +2,7 @@ import React from 'react'
 import NavHeader from '../../common/NavHeader'
 import styles from './index.module.scss'
 // console.log(styles)
-import { getCurrentCity } from '../../utils'
+import { getCurrentCity, BASE_URL, API } from '../../utils'
 import Axios from 'axios'
 import { Toast } from 'antd-mobile'
 const BMap = window.BMap
@@ -59,11 +59,11 @@ class Map extends React.Component {
     // 发送ajax 获取到该城市下的所有房源
     // 创建一个 不会关闭的 loading
     Toast.loading('loading...', 0)
-    const res = await Axios.get(`http://localhost:8080/area/map?id=${id}`)
+    const res = await API.get(`area/map?id=${id}`)
 
     // 获取下一级渲染的方式 和 放大级别
     const { nextZoom, type } = this.getTypeAndZoom()
-    const citys = res.data.body
+    const citys = res.body
     citys.forEach(e => {
       this.createOverlays(e, type, nextZoom)
     })
@@ -159,14 +159,14 @@ class Map extends React.Component {
   async getHouseList(e) {
     // 创建loading
     Toast.loading('loading...', 0)
-    const res = await Axios.get(
-      `http://localhost:8080/houses?cityId=${e.value}`
-    )
+    const res = await API.get(`houses?cityId=${e.value}`)
+    console.log(res)
+
     // 关闭loading
     Toast.hide()
     this.setState({
       isShow: true,
-      houses: res.data.body.list
+      houses: res.body.list
     })
   }
   // 该方法调用返回一个 对象 类型和放大级别
@@ -209,7 +209,7 @@ class Map extends React.Component {
                 <div className="imgWrap">
                   <img
                     className="img"
-                    src={`http://localhost:8080${e.houseImg}`}
+                    src={`${BASE_URL}${e.houseImg}`}
                     alt=""
                   />
                 </div>

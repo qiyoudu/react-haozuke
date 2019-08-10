@@ -1,0 +1,18 @@
+.house {
+  :global {
+    .house-title {
+      background-color: pink;
+      padding-left: 10px;
+      .houseSearchHeader {
+        height: 45px;
+        //  覆盖掉fixed定位 fixed定位脱标了 原本的  static就是默认的
+        position: static;
+        top: 0;
+        padding-left: 0;
+        .icon-map {
+          color: greenyellow;
+        }
+      }
+    }
+  }
+}

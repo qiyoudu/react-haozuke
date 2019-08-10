@@ -7,7 +7,7 @@ const API = axios.create({
 // 配置响应的拦截器
 API.interceptors.response.use(
   function(response) {
-    // 对响应数据做点什么
+    // 对响应数据做点什么 去除了 res.data
     return response.data
   },
   function(error) {

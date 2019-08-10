@@ -27,13 +27,20 @@ class Map extends React.Component {
     const map = new BMap.Map('container')
     // 把map挂载在this上
     this.map = map
+    // 地图注册移动事件
+    map.addEventListener('movestart', () => {
+      this.setState({
+        isShow: false
+      })
+    })
     // 创建地址解析器实例
     const myGeo = new BMap.Geocoder()
+
     myGeo.getPoint(
       label,
       point => {
         if (!point) return
-        console.log(point)
+        // console.log(point)
 
         map.centerAndZoom(point, 11)
         // 这是添加标注的  添加文字标签
@@ -47,7 +54,7 @@ class Map extends React.Component {
   }
   async renderOverlays(id) {
     // 获取到城市id
-    console.log(id)
+    // console.log(id)
     // 发送ajax 获取到该城市下的所有房源
     const res = await Axios.get(`http://localhost:8080/area/map?id=${id}`)
     // console.log(res)
@@ -131,21 +138,24 @@ class Map extends React.Component {
     })
     this.map.addOverlay(label)
     // 注册点击事件
-    label.addEventListener('click', () => {
+    label.addEventListener('click', element => {
       // 把地图放到最中间
       this.map.centerAndZoom(point, nextZoom)
       // 获取 房源列表 百度地图监听事件没有支持 async 把函数调出去
       this.getHouseList(e)
-      // 显示对应的结构
+
+      console.log(element)
     })
   }
   async getHouseList(e) {
     const res = await Axios.get(
       `http://localhost:8080/houses?cityId=${e.value}`
     )
+    console.log(res)
+
     this.setState({
-      isShow: true
-      // houses: res.data.body.list
+      isShow: true,
+      houses: res.data.body.list
     })
   }
   // 该方法调用返回一个 对象 类型和放大级别
@@ -177,33 +187,39 @@ class Map extends React.Component {
         <div id="container" />
         <div className={`houseList ${this.state.isShow ? 'show' : ''}`}>
           <div className="titleWrap">
-            <h1 className="listTitle">sd</h1>
+            <h1 className="listTitle">房源信息</h1>
             <a className="titleMore" href="/house/list">
               更多房源
             </a>
           </div>
           <div className="houseItems">
-            <div className="house">
-              <div className="imgWrap">
-                <img
-                  className="img"
-                  src="http://localhost:8080/newImg/7bi0l6e09.jpg"
-                  alt=""
-                />
-              </div>
-              <div className="content">
-                <h3 className="title">
-                  三期精装修两房，南北户型，房东诚意出租出门燎原双语
-                </h3>
-                <div className="desc">2室2厅1卫/82/南/阳光美景城</div>
-                <div>
-                  <span className="tag tag1">近地铁</span>
+            {this.state.houses.map(e => (
+              <div key={e.houseCode} className="house">
+                <div className="imgWrap">
+                  <img
+                    className="img"
+                    src={`http://localhost:8080${e.houseImg}`}
+                    alt=""
+                  />
                 </div>
-                <div className="price">
-                  <span className="priceNum">8500</span> 元/月
+                <div className="content">
+                  <h3 className="title">{e.title}</h3>
+                  <div className="desc">{e.desc}</div>
+                  <div>
+                    {e.tags.map((e, index) => {
+                      return (
+                        <span key={e} className={`tag tag${index + 1}`}>
+                          {e}
+                        </span>
+                      )
+                    })}
+                  </div>
+                  <div className="price">
+                    <span className="priceNum">{e.price}</span> 元/月
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

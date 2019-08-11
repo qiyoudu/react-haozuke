@@ -10,7 +10,9 @@
   参数：不需要
   返回值：当前的城市信息
 */
-import axios from 'axios'
+// import { BASE_URL } from './config'
+import { API } from './api'
+// import axios from 'axios'
 
 // 不会改变的量：常量
 const CURRENT_CITY = 'current_city'
@@ -37,14 +39,13 @@ export function getCurrentCity() {
       myCity.get(result => {
         const name = result.name
         // 当前城市发送ajax请求，获取数据
-        axios
-          .get('http://localhost:8080/area/info', {
-            params: {
-              name: name
-            }
-          })
+        API.get('area/info', {
+          params: {
+            name: name
+          }
+        })
           .then(res => {
-            const { body } = res.data
+            const { body } = res
             // 存储到本地缓存中
             setCity(body)
             // 把成功的结果交给了resolve

@@ -6,7 +6,23 @@ import SearchHeader from '../../../common/SearchHeader'
 import { Flex } from 'antd-mobile'
 // 导入样式
 import styles from './index.module.scss'
+// 导入获取城市的方法
+import { getCity } from '../../../utils'
+// 导入筛选组件
+import Filter from './Filter'
 class House extends React.Component {
+  state = {
+    cityName: '芜湖'
+  }
+  // 获取当前城市
+  componentDidMount() {
+    const cityName = getCity()
+    // console.log(cityName)
+
+    this.setState({
+      cityName: cityName.label
+    })
+  }
   render() {
     return (
       <div className={styles.house}>
@@ -15,8 +31,12 @@ class House extends React.Component {
             className="iconfont icon-back"
             onClick={() => this.props.history.go(-1)}
           />
-          <SearchHeader cityName="芜湖" className="houseSearchHeader" />
+          <SearchHeader
+            cityName={this.state.cityName}
+            className="houseSearchHeader"
+          />
         </Flex>
+        <Filter />
       </div>
     )
   }

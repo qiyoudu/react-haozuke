@@ -3,7 +3,7 @@ import NavHeader from '../../common/NavHeader'
 import styles from './index.module.scss'
 // console.log(styles)
 import { getCurrentCity, BASE_URL, API } from '../../utils'
-import Axios from 'axios'
+
 import { Toast } from 'antd-mobile'
 const BMap = window.BMap
 

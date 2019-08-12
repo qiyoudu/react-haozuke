@@ -1,109 +1,53 @@
 import React from 'react'
-// import styles from './index.module.scss'
 import { PickerView } from 'antd-mobile'
-// 假数据
-const province = [
-  {
-    label: '北京',
-    value: '01',
-    children: [
-      {
-        label: '东城区',
-        value: '01-1'
-      },
-      {
-        label: '西城区',
-        value: '01-2'
-      },
-      {
-        label: '崇文区',
-        value: '01-3'
-      },
-      {
-        label: '宣武区',
-        value: '01-4'
-      }
-    ]
-  },
-  {
-    label: '浙江',
-    value: '02',
-    children: [
-      {
-        label: '杭州',
-        value: '02-1',
-        children: [
-          {
-            label: '西湖区',
-            value: '02-1-1'
-          },
-          {
-            label: '上城区',
-            value: '02-1-2'
-          },
-          {
-            label: '江干区',
-            value: '02-1-3'
-          },
-          {
-            label: '下城区',
-            value: '02-1-4'
-          }
-        ]
-      },
-      {
-        label: '宁波',
-        value: '02-2',
-        children: [
-          {
-            label: 'xx区',
-            value: '02-2-1'
-          },
-          {
-            label: 'yy区',
-            value: '02-2-2'
-          }
-        ]
-      },
-      {
-        label: '温州',
-        value: '02-3'
-      },
-      {
-        label: '嘉兴',
-        value: '02-4'
-      },
-      {
-        label: '湖州',
-        value: '02-5'
-      },
-      {
-        label: '绍兴',
-        value: '02-6'
-      }
-    ]
-  }
-]
+import styles from './index.module.scss'
+import FilterFooter from '../FilterFooter'
+
 class FilterPicker extends React.Component {
+  // constructor(props) {
+  //   super(props)
+  //   this.state = {
+  //     value: this.props.defaultValue
+  //   }
+  //   // console.log('父组件的默认值', this.props.defaultValue)
+  // }
   state = {
-    value: null
+    value: this.props.defaultValue
   }
-  onChange = value => {
-    console.log(value)
+  componentDidUpdate(prevProps) {
+    // 如果发先两次的defaultValue不一样了，需要更新默认值
+    if (prevProps.defaultValue !== this.props.defaultValue) {
+      this.setState({
+        value: this.props.defaultValue
+      })
+    }
+  }
+
+  handleChange = value => {
+    // 通过value可以和获取到选中的值
     this.setState({
       value
     })
-  }
-  onScrollChange = value => {
     console.log(value)
   }
+
   render() {
+    const { onCancel, onSave, data, cols } = this.props
+    const { value } = this.state
+    // console.log('父组件的数据', data)
     return (
-      <div className="pickerView">
-        <PickerView data={province} value={['02', '02-1', '02-1-1']} />
+      <div className={styles['filter-picker']}>
+        {/* 三级联动 */}
+        <PickerView
+          data={data}
+          cols={cols}
+          value={value}
+          onChange={this.handleChange}
+        />
+        {/* 底部 */}
+        <FilterFooter onCancel={onCancel} onSave={() => onSave(value)} />
       </div>
     )
   }
 }
-// 暴露
 export default FilterPicker

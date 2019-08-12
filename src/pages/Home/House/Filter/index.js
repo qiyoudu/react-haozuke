@@ -16,7 +16,7 @@ class Filter extends React.Component {
           <FilterTitle />
           <FilterPicker />
           <FilterFooter />
-          <FilterMore />
+          {/* <FilterMore /> */}
         </div>
       </div>
     )

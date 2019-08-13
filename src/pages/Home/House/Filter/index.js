@@ -23,7 +23,7 @@ class Filter extends React.Component {
     openType: '',
     // 所有的筛选条件
     filtersData: {},
-    // 用于存储所有已经选择过的筛选的条件
+    // 用于存储所有已经选择过的筛选的条件 提供默认的数据
     selectedValues: {
       area: ['area', 'null'],
       mode: ['null'],
@@ -35,17 +35,52 @@ class Filter extends React.Component {
     this.getFiltersData()
   }
   changeStatus = type => {
-    // console.log(type)
-    // 父组件需要把type对应的值改成true
+    //     获取到每个key对应的value值， SelectedValues[key]
 
-    const { titleSelectedStatus } = this.state
-    // const temp = { ...titleSelectedStatus }
-    // temp[type] = true
+    // 思路：1. 如果key是点击的标题  type,,直接高亮
+
+    //      2. 如果key是area,  只要不是默认值就高亮   值的长度为3 或者这 值的第一项是 subway
+
+    //      3. key 是  mode    值的第一项不是 'null'
+
+    //      4. key 是price    值的第一项只要不是 'null'
+
+    //      5. 其余情况，都是false
+    // 循环break 和 函数return的区别
+    //
+    // console.log(type)
+
+    const { titleSelectedStatus, selectedValues } = this.state
+    const newTitleSelectedStatus = { ...titleSelectedStatus }
+    // 循环的结果 点击mode时 样式=> {area:false,mode:true,price:false,more:false}
+    Object.keys(newTitleSelectedStatus).forEach(key => {
+      // console.log(key)
+      // 默认的值
+      let a = selectedValues[key]
+      // console.log(a)
+      //例如点击mode type=mode  第一个用来显示点击高亮 后面用来循环判断是否是默认值 这里是循环  key===type时 直接高亮 接下来的遍历判断是否其他需要高亮 返回的样式 {area:false,mode:true,price:false,more:false} 替换数据
+      if (key === type) {
+        newTitleSelectedStatus[key] = true
+        // 执行一次
+        // console.log('我是租金')
+      } else if ((key === 'area' && a.length === 3) || a[0] === 'subway') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'mode' && a[0] !== 'null') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'price' && a[0] !== 'null') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'more') {
+        // newTitleSelectedStatus[key] = true
+        // 占位置
+      } else {
+        // 不亮
+        newTitleSelectedStatus[key] = false
+      }
+    })
+    // console.log(flag)
+
     this.setState({
-      titleSelectedStatus: {
-        ...titleSelectedStatus,
-        [type]: true
-      },
+      titleSelectedStatus: newTitleSelectedStatus,
       openType: type
     })
   }
@@ -54,7 +89,7 @@ class Filter extends React.Component {
   async getFiltersData() {
     const { value } = await getCurrentCity()
     const res = await API.get(`houses/condition?id=${value}`)
-    console.log(res)
+    // console.log(res)
 
     this.setState({
       filtersData: res.body
@@ -68,6 +103,11 @@ class Filter extends React.Component {
       filtersData: { area, subway, rentType, price },
       selectedValues
     } = this.state
+    // console.log('打印')
+    // 打印三次 前两次为空 最后一次获取到数据
+    // debugger
+
+    // console.log(this.state.filtersData)
     // 点击title的时候才会显示 filterPicker组件
     if (openType === '' || openType === 'more') return
 
@@ -83,6 +123,7 @@ class Filter extends React.Component {
       data = price
       cols = 1
     }
+    // 增加key属性 不要去复用这个组件 而是重新创建执行constructor
     return (
       <FilterPicker
         onCancel={this.onCancel}
@@ -90,24 +131,66 @@ class Filter extends React.Component {
         data={data}
         cols={cols}
         defaultValue={defaultValue}
+        key={openType}
       />
     )
   }
   onCancel = () => {
     console.log('我要隐藏了')
+    const { selectedValues, openType } = this.state
+    // const newTitleSelectedStatus = { ...titleSelectedStatus }
+    let val = selectedValues[openType] + ''
+    // console.log(val)
+
+    // console.log(selectedValues)
+    // console.log(openType)
+    // 判断这一项的值是否和默认值是否相同  true为亮 思路一致适合封装
+    // if (openType === 'area' && val !== 'area,null') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else if (openType === 'mode' && val !== 'null') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else if (openType === 'price' && val !== 'null') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else if (openType === 'more' && val !== '') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else {
+    //   newTitleSelectedStatus[openType] = false
+    // }
+    const res = this.isLight(val)
     this.setState({
+      titleSelectedStatus: res,
       openType: ''
     })
   }
+  isLight = val => {
+    const { titleSelectedStatus, openType } = this.state
+    const newTitleSelectedStatus = { ...titleSelectedStatus }
+    if (openType === 'area' && val !== 'area,null') {
+      newTitleSelectedStatus[openType] = true
+    } else if (openType === 'mode' && val !== 'null') {
+      newTitleSelectedStatus[openType] = true
+    } else if (openType === 'price' && val !== 'null') {
+      newTitleSelectedStatus[openType] = true
+    } else if (openType === 'more' && val !== '') {
+      newTitleSelectedStatus[openType] = true
+    } else {
+      newTitleSelectedStatus[openType] = false
+    }
+    return newTitleSelectedStatus
+  }
   onSave = v => {
-    console.log('我也会隐藏但是要提交数据')
+    // 数组加上''会转化为字符串
+    console.log(v)
+    // console.log(['dd', 'bb', 'cc'])
+    const res = this.isLight(v + '')
     const { openType } = this.state
     this.setState({
       openType: '',
       selectedValues: {
         ...this.state.selectedValues,
         [openType]: v
-      }
+      },
+      titleSelectedStatus: res
     })
   }
 

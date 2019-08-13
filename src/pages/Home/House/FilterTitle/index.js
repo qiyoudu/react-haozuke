@@ -12,15 +12,9 @@ const titleList = [
 class FilterTitle extends React.Component {
   changeStatus = v => {
     this.props.changeStatus(v)
-    console.log(v)
+    // console.log(v)
   }
-  componentDidUpdate(prev) {
-    // 如果更新组件时 默认值和上一的一致 则不需要用改变高亮
-    console.log(prev)
-    console.log(this.props)
 
-    // if (prev===this.props)
-  }
   render() {
     // console.log(this.props.titleSelectedStatus)
     const { titleSelectedStatus } = this.props

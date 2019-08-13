@@ -14,14 +14,6 @@ class FilterPicker extends React.Component {
   state = {
     value: this.props.defaultValue
   }
-  componentDidUpdate(prevProps) {
-    // 如果发先两次的defaultValue不一样了，需要更新默认值
-    if (prevProps.defaultValue !== this.props.defaultValue) {
-      this.setState({
-        value: this.props.defaultValue
-      })
-    }
-  }
 
   handleChange = value => {
     // 通过value可以和获取到选中的值
@@ -33,6 +25,8 @@ class FilterPicker extends React.Component {
 
   render() {
     const { onCancel, onSave, data, cols } = this.props
+    // console.log(openType)
+
     const { value } = this.state
     // console.log('父组件的数据', data)
     return (

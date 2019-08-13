@@ -164,7 +164,8 @@ class Filter extends React.Component {
   }
   isLight = val => {
     const { titleSelectedStatus, openType } = this.state
-    const newTitleSelectedStatus = { ...titleSelectedStatus }
+    let newTitleSelectedStatus = { ...titleSelectedStatus }
+    // 为什么这里的  newTitleSelectedStatus[openType] 不能提取出来?
     if (openType === 'area' && val !== 'area,null') {
       newTitleSelectedStatus[openType] = true
     } else if (openType === 'mode' && val !== 'null') {

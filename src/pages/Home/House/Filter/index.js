@@ -35,8 +35,6 @@ class Filter extends React.Component {
     this.getFiltersData()
   }
   changeStatus = type => {
-    // 调用 保存的按钮
-
     // console.log(type)
     // 父组件需要把type对应的值改成true
 

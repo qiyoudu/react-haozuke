@@ -2,7 +2,6 @@ import React from 'react'
 import styles from './index.module.scss'
 import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
-import FilterMore from '../FilterMore'
 import { API, getCurrentCity } from '../../../../utils'
 // // 侧边栏 数据放在父组件中统一管理
 // // import FilterMore from '../FilterMore'
@@ -36,21 +35,49 @@ class Filter extends React.Component {
     this.getFiltersData()
   }
   changeStatus = type => {
+    //     获取到每个key对应的value值， SelectedValues[key]
+
+    // 思路：1. 如果key是点击的标题  type,,直接高亮
+
+    //      2. 如果key是area,  只要不是默认值就高亮   值的长度为3 或者这 值的第一项是 subway
+
+    //      3. key 是  mode    值的第一项不是 'null'
+
+    //      4. key 是price    值的第一项只要不是 'null'
+
+    //      5. 其余情况，都是false
+    // 循环break 和 函数return的区别
+    //
+    // console.log(type)
+
     const { titleSelectedStatus, selectedValues } = this.state
-    let newTitleSelectedStatus = { ...titleSelectedStatus }
+    const newTitleSelectedStatus = { ...titleSelectedStatus }
     // 循环的结果 点击mode时 样式=> {area:false,mode:true,price:false,more:false}
     Object.keys(newTitleSelectedStatus).forEach(key => {
+      // console.log(key)
+      // 默认的值
+      let a = selectedValues[key]
+      // console.log(a)
+      //例如点击mode type=mode  第一个用来显示点击高亮 后面用来循环判断是否是默认值 这里是循环  key===type时 直接高亮 接下来的遍历判断是否其他需要高亮 返回的样式 {area:false,mode:true,price:false,more:false} 替换数据
       if (key === type) {
         newTitleSelectedStatus[key] = true
+        // 执行一次
+        // console.log('我是租金')
+      } else if ((key === 'area' && a.length === 3) || a[0] === 'subway') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'mode' && a[0] !== 'null') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'price' && a[0] !== 'null') {
+        newTitleSelectedStatus[key] = true
+      } else if (key === 'more') {
+        // newTitleSelectedStatus[key] = true
+        // 占位置
       } else {
-        const res = this.isLight(key, selectedValues[key])
         // 不亮
-
-        // console.log(res)
-        // 把对象合并到第一个对象中 es6assgin
-        Object.assign(newTitleSelectedStatus, res)
+        newTitleSelectedStatus[key] = false
       }
     })
+    // console.log(flag)
 
     this.setState({
       titleSelectedStatus: newTitleSelectedStatus,
@@ -110,13 +137,28 @@ class Filter extends React.Component {
   }
   onCancel = () => {
     console.log('我要隐藏了')
-    const { selectedValues, openType, titleSelectedStatus } = this.state
+    const { selectedValues, openType } = this.state
     // const newTitleSelectedStatus = { ...titleSelectedStatus }
-    let val = selectedValues[openType]
+    let val = selectedValues[openType] + ''
+    // console.log(val)
 
-    const res = this.isLight(openType, val)
+    // console.log(selectedValues)
+    // console.log(openType)
+    // 判断这一项的值是否和默认值是否相同  true为亮 思路一致适合封装
+    // if (openType === 'area' && val !== 'area,null') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else if (openType === 'mode' && val !== 'null') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else if (openType === 'price' && val !== 'null') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else if (openType === 'more' && val !== '') {
+    //   newTitleSelectedStatus[openType] = true
+    // } else {
+    //   newTitleSelectedStatus[openType] = false
+    // }
+    const res = this.isLight(val)
     this.setState({
-      titleSelectedStatus: { ...titleSelectedStatus, ...res },
+      titleSelectedStatus: res,
       openType: ''
     })
   }
@@ -124,52 +166,43 @@ class Filter extends React.Component {
     接收一个title和 title对应的值
     返回：一个对象，对象包含了这个title是否高亮
   */
-  isLight = (title, val) => {
-    const obj = {}
-    const selectedVal = val.toString()
-    if (title === 'area' && selectedVal !== 'area,null') {
+  isLight = val => {
+    const { titleSelectedStatus, openType } = this.state
+    let newTitleSelectedStatus = { ...titleSelectedStatus }
+    // 为什么这里的  newTitleSelectedStatus[openType] 不能提取出来? 因为程序运行到这里 已经是定值了
+    var a = newTitleSelectedStatus[openType]
+    console.log(a)
+
+    if (openType === 'area' && val !== 'area,null') {
       // 这里修改的是对象中的值
-      obj[title] = true
-    } else if (title === 'mode' && selectedVal !== 'null') {
-      obj[title] = true
-    } else if (title === 'price' && selectedVal !== 'null') {
-      obj[title] = true
-    } else if (title === 'more' && selectedVal !== '') {
-      obj[title] = true
+      newTitleSelectedStatus[openType] = true
+    } else if (openType === 'mode' && val !== 'null') {
+      newTitleSelectedStatus[openType] = true
+    } else if (openType === 'price' && val !== 'null') {
+      newTitleSelectedStatus[openType] = true
+    } else if (openType === 'more' && val !== '') {
+      newTitleSelectedStatus[openType] = true
     } else {
-      obj[title] = false
+      newTitleSelectedStatus[openType] = false
     }
-    return obj
+    return newTitleSelectedStatus
   }
   onSave = v => {
     // 数组加上''会转化为字符串
-    const { openType, selectedValues, titleSelectedStatus } = this.state
+    console.log(v)
     // console.log(['dd', 'bb', 'cc'])
-    const res = this.isLight(openType, v)
-    // const { openType } = this.state
+    const res = this.isLight(v + '')
+    const { openType } = this.state
     this.setState({
       openType: '',
       selectedValues: {
-        ...selectedValues,
+        ...this.state.selectedValues,
         [openType]: v
       },
-      titleSelectedStatus: { ...titleSelectedStatus, ...res }
+      titleSelectedStatus: res
     })
   }
-  renderFilterMore = () => {
-    const {
-      openType,
-      filtersData: { roomType, oriented, floor, characteristic }
-    } = this.state
-    const data = { roomType, oriented, floor, characteristic }
-    // console.log(data)
 
-    if (openType === 'more') {
-      return <FilterMore {...data} />
-    } else {
-      return null
-    }
-  }
   render() {
     const { titleSelectedStatus, openType } = this.state
     return (
@@ -189,7 +222,7 @@ class Filter extends React.Component {
           {/* picker */}
           {this.renderFilterPicker()}
           {/* more */}
-          {this.renderFilterMore()}
+          {/* <FilterMore /> */}
         </div>
       </div>
     )

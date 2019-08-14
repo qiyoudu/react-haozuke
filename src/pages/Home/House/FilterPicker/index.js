@@ -39,7 +39,11 @@ class FilterPicker extends React.Component {
           onChange={this.handleChange}
         />
         {/* 底部 */}
-        <FilterFooter onCancel={onCancel} onSave={() => onSave(value)} />
+        <FilterFooter
+          // buttonName1={'heh'}
+          onCancel={onCancel}
+          onSave={() => onSave(value)}
+        />
       </div>
     )
   }

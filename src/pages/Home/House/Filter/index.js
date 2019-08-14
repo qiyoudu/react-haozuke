@@ -122,7 +122,7 @@ class Filter extends React.Component {
   }
   /* 
     接收一个title和 title对应的值
-    返回：一个对象，对象包含了这个title是否高亮
+    返回：一个对象，对象包含了这个title是否高亮  主要用来回显示高亮的效果
   */
   isLight = (title, val) => {
     const obj = {}
@@ -145,6 +145,8 @@ class Filter extends React.Component {
     // 数组加上''会转化为字符串
     const { openType, selectedValues, titleSelectedStatus } = this.state
     // console.log(['dd', 'bb', 'cc'])
+    console.log(selectedValues)
+
     const res = this.isLight(openType, v)
     // const { openType } = this.state
     this.setState({
@@ -156,16 +158,32 @@ class Filter extends React.Component {
       titleSelectedStatus: { ...titleSelectedStatus, ...res }
     })
   }
+  onClickMask = () => {
+    // console.log(1)
+    // 执行隐藏组件
+    this.setState({
+      openType: ''
+    })
+  }
+
   renderFilterMore = () => {
     const {
       openType,
-      filtersData: { roomType, oriented, floor, characteristic }
+      filtersData: { roomType, oriented, floor, characteristic },
+      selectedValues
     } = this.state
     const data = { roomType, oriented, floor, characteristic }
     // console.log(data)
 
     if (openType === 'more') {
-      return <FilterMore {...data} />
+      return (
+        <FilterMore
+          defaultValue={selectedValues['more']}
+          {...data}
+          onClickMask={this.onClickMask}
+          onPut={this.onSave}
+        />
+      )
     } else {
       return null
     }

@@ -25,7 +25,7 @@ class FilterMore extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedValue: []
+      selectedValue: this.props.defaultValue
     }
   }
   handelClick = (v, i) => {
@@ -42,10 +42,21 @@ class FilterMore extends React.Component {
     }
     // console.log(newSelectedValue)
 
-    // 替换原数据
+    // 替换原数据 触发跟新阶段
     this.setState({
       selectedValue: [...newSelectedValue]
     })
+  }
+  onClear = () => {
+    // 清除所有的选项
+    this.setState({
+      selectedValue: []
+    })
+  }
+  onSave = () => {
+    // console.log('save')
+    // 得到数据传递给父组件
+    this.props.onPut(this.state.selectedValue)
   }
   render() {
     // console.log(this.props)
@@ -53,7 +64,7 @@ class FilterMore extends React.Component {
     return (
       <div className={styles['filter-more']}>
         {/* 遮罩层 */}
-        <div className="mask" />
+        <div className="mask" onClick={this.props.onClickMask} />
         {/* 条件内容 */}
         <div className="tags">
           <dl className="dl">
@@ -70,7 +81,12 @@ class FilterMore extends React.Component {
             <dd className="dd">{this.renderSpan(characteristic)}</dd>
           </dl>
         </div>
-        <FilterFooter className={'footer'} />
+        <FilterFooter
+          onSave={this.onSave}
+          onCancel={this.onClear}
+          buttonName1="清除"
+          className={'footer'}
+        />
       </div>
     )
   }

@@ -145,18 +145,21 @@ class Filter extends React.Component {
     // 数组加上''会转化为字符串
     const { openType, selectedValues, titleSelectedStatus } = this.state
     // console.log(['dd', 'bb', 'cc'])
-    console.log(selectedValues)
+    // console.log(selectedValues)
 
     const res = this.isLight(openType, v)
     // const { openType } = this.state
-    this.setState({
-      openType: '',
-      selectedValues: {
-        ...selectedValues,
-        [openType]: v
+    this.setState(
+      {
+        openType: '',
+        selectedValues: {
+          ...selectedValues,
+          [openType]: v
+        },
+        titleSelectedStatus: { ...titleSelectedStatus, ...res }
       },
-      titleSelectedStatus: { ...titleSelectedStatus, ...res }
-    })
+      () => this.props.onFilter(this.state.selectedValues)
+    )
   }
   onClickMask = () => {
     // console.log(1)

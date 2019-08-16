@@ -51,11 +51,23 @@ class Home extends React.Component {
   //   }
   // }
   state = {
+    // 控制高亮
     selectedTab: this.props.location.pathname,
     hidden: false,
     fullScreen: true
   }
+  componentDidUpdate({ location }) {
+    // console.log(location.pathname, this.props.location.pathname)
+    // 解决点击 go(-1)时 高亮 检查判断条件
+    if (location.pathname !== this.props.location.pathname) {
+      // console.log(1)
 
+      this.setState({
+        selectedTab: this.props.location.pathname
+      })
+    }
+    // console.log(this.props.location.pathname)
+  }
   render() {
     return (
       // 配置路由

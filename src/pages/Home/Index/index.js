@@ -32,6 +32,7 @@ class Index extends React.Component {
     isLoaded: false,
     cityName: '北京'
   }
+  // 需要改变高亮的状态
   async getSwipers() {
     // 使用API
     const res = await API.get('home/swiper')

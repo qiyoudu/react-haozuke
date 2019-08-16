@@ -3,8 +3,10 @@ import NavHeader from '../../common/NavHeader'
 import styles from './index.module.scss'
 // console.log(styles)
 import { getCurrentCity, BASE_URL, API } from '../../utils'
-
+//导入 houseItem组件
+// import HouseItem from '../../common/HouseItem'
 import { Toast } from 'antd-mobile'
+import HouseItem from '../../common/HouseItem'
 const BMap = window.BMap
 
 // 在react中，如果想要直接访问全局变量，需要通过window
@@ -160,7 +162,7 @@ class Map extends React.Component {
     // 创建loading
     Toast.loading('loading...', 0)
     const res = await API.get(`houses?cityId=${e.value}`)
-    console.log(res)
+    // console.log(res)
 
     // 关闭loading
     Toast.hide()
@@ -168,6 +170,7 @@ class Map extends React.Component {
       isShow: true,
       houses: res.body.list
     })
+    // console.log(this.state.houses)
   }
   // 该方法调用返回一个 对象 类型和放大级别
   getTypeAndZoom() {
@@ -190,6 +193,9 @@ class Map extends React.Component {
       type
     }
   }
+  renderHouse() {
+    return this.state.houses.map(e => <HouseItem key={e.houseCode} e={e} />)
+  }
   render() {
     return (
       <div className={styles.map}>
@@ -203,35 +209,7 @@ class Map extends React.Component {
               更多房源
             </a>
           </div>
-          <div className="houseItems">
-            {this.state.houses.map(e => (
-              <div key={e.houseCode} className="house">
-                <div className="imgWrap">
-                  <img
-                    className="img"
-                    src={`${BASE_URL}${e.houseImg}`}
-                    alt=""
-                  />
-                </div>
-                <div className="content">
-                  <h3 className="title">{e.title}</h3>
-                  <div className="desc">{e.desc}</div>
-                  <div>
-                    {e.tags.map((e, index) => {
-                      return (
-                        <span key={e} className={`tag tag${index + 1}`}>
-                          {e}
-                        </span>
-                      )
-                    })}
-                  </div>
-                  <div className="price">
-                    <span className="priceNum">{e.price}</span> 元/月
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="houseItems">{this.renderHouse()}</div>
         </div>
       </div>
     )

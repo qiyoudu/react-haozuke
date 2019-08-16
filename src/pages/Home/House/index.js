@@ -10,7 +10,9 @@ import styles from './index.module.scss'
 import { getCity, API } from '../../../utils'
 // 导入筛选组件
 import Filter from './Filter'
-import HouseItems from '../../../common/HouseItem'
+import HouseItem from '../../../common/HouseItem'
+// 使用 react-virtualized 渲染这个页面 数据多的情况
+import { List, AutoSizer } from 'react-virtualized'
 class House extends React.Component {
   state = {
     cityName: '芜湖',
@@ -22,7 +24,7 @@ class House extends React.Component {
   // 获取当前城市
   componentDidMount() {
     const cityName = getCity()
-    console.log(cityName)
+    // console.log(cityName)
     // 发送ajax获取数据
     this.getHouseList()
     this.setState({
@@ -30,7 +32,7 @@ class House extends React.Component {
       cityId: cityName.value
     })
   }
-  async onFilter(v) {
+  onFilter = v => {
     // 子传父 数据
     // console.log(v)
     let { area, mode, more, price } = v
@@ -66,12 +68,14 @@ class House extends React.Component {
       price,
       area
     }
+    // console.log(this.state.list)
+    // console.log(this)
+
     //  改变state数据
     this.setState({
       filters
     })
   }
-  // 根据filters发送ajax
 
   async getHouseList() {
     const res = await API.get(`/houses`, {
@@ -79,12 +83,31 @@ class House extends React.Component {
     })
     let { body, status } = res
     // console.log(res)
-    if (status === 200) {
-      this.setState({
-        list: body.list,
-        count: body.count
-      })
+    // if (status === 200) {
+    this.setState({
+      list: body.list,
+      count: body.count
+    })
+    // }
+    console.log(this.state.list)
+  }
+  rowRenderer = ({ key, index, style }) => {
+    // console.log(style)
+    // console.log(key)
+    // console.log(index)
+    // console.log(this.state.list)
+    // console.log(this.state.list)
+
+    // 如果 item 一开始没有 没有值那么 渲染一个提示消息
+    const item = this.state.list[index]
+    if (!item) {
+      return (
+        <div key={key} style={style} className="tips">
+          <p>heh</p>
+        </div>
+      )
     }
+    return <HouseItem key={key} e={item} style={style} />
   }
   render() {
     return (
@@ -100,7 +123,17 @@ class House extends React.Component {
           />
         </Flex>
         <Filter onFilter={this.onFilter} />
-        {/* <HouseItems {...this.state.list} /> */}
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              height={height}
+              width={width}
+              rowCount={this.state.count}
+              rowHeight={130}
+              rowRenderer={this.rowRenderer.bind(this)}
+            />
+          )}
+        </AutoSizer>
       </div>
     )
   }

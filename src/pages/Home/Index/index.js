@@ -19,6 +19,8 @@ const navList = [
 ]
 
 class Index extends React.Component {
+  // 给实例上原型加的 this可以访问到 Index {props: {…}, context: {…}, refs: {…}, updater: {…}, name: "呵呵", …} Index 应该是和 new Person 类比一下记 那么Index是像 构造函数一样吗?类中添加的普通方法添加给了实例原型,
+  name = '呵呵'
   state = {
     // 指的是轮播图的初始数据
     swipers: [],
@@ -121,6 +123,8 @@ class Index extends React.Component {
     return <SearchHeader cityName={this.state.cityName} />
   }
   renderNav() {
+    // console.log(this)
+
     return (
       <Flex>
         {navList.map(item => (
@@ -207,5 +211,7 @@ class Index extends React.Component {
     )
   }
 }
+// var p = new Index()
+// console.log(p)  this指的是 实例 那么 Index 就像是构造函数
 
 export default Index

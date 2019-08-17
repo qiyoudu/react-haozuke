@@ -4,8 +4,9 @@
   :global {
     .content {
       position: relative;
-      z-index: 3;
+      z-index: 99;
       background-color: #fff;
+      // height: 40px;
     }
     // 遮罩层
     .mask {

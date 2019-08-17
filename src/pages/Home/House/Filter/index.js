@@ -30,7 +30,8 @@ class Filter extends React.Component {
       mode: ['null'],
       price: ['null'],
       more: []
-    }
+    },
+    overflow: ''
   }
   componentDidMount() {
     this.getFiltersData()
@@ -54,7 +55,8 @@ class Filter extends React.Component {
 
     this.setState({
       titleSelectedStatus: newTitleSelectedStatus,
-      openType: type
+      openType: type,
+      overflow: 'hidden'
     })
   }
   // 获取筛选的条件的数据
@@ -117,7 +119,8 @@ class Filter extends React.Component {
     const res = this.isLight(openType, val)
     this.setState({
       titleSelectedStatus: { ...titleSelectedStatus, ...res },
-      openType: ''
+      openType: '',
+      overflow: ''
     })
   }
   /* 
@@ -156,10 +159,13 @@ class Filter extends React.Component {
           ...selectedValues,
           [openType]: v
         },
-        titleSelectedStatus: { ...titleSelectedStatus, ...res }
+        titleSelectedStatus: { ...titleSelectedStatus, ...res },
+        overflow: ''
       },
       () => this.props.onFilter(this.state.selectedValues)
     )
+    // 回到页面顶部
+    window.scrollTo(0, 0)
   }
   onClickMask = () => {
     // console.log(1)
@@ -191,14 +197,22 @@ class Filter extends React.Component {
       return null
     }
   }
+  renderMask() {
+    // 有mask的时候让 body overflow hidden 不能滚动
+    document.body.style.overflow = this.state.overflow
+    const { openType } = this.state
+    return openType === 'area' ||
+      openType === 'mode' ||
+      openType === 'price' ? (
+      <div className="mask" onClick={this.onCancel} />
+    ) : null
+  }
   render() {
-    const { titleSelectedStatus, openType } = this.state
+    const { titleSelectedStatus } = this.state
     return (
       // 蒙层的显示和隐藏
       <div className={styles.filter}>
-        {openType === 'area' || openType === 'mode' || openType === 'price' ? (
-          <div className="mask" onClick={this.onCancel} />
-        ) : null}
+        {this.renderMask()}
 
         <div className="content">
           {/* filter组件的内容 */}

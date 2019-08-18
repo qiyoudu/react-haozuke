@@ -16,12 +16,13 @@ class NavHeader extends React.Component {
   render() {
     return (
       <NavBar
-        // this.props是NavHeader上的值
+        // this.props是NavHeader标签上的值
         style={{ backgroundColor: this.props.backgroundColor }}
         className={styles.navBar}
         mode="light"
         icon={<Icon type="left" className={styles['icon-back']} />}
         onLeftClick={() => this.props.history.go(-1)}
+        rightContent={this.props.rightContent}
       >
         {this.props.children}
       </NavBar>

@@ -4,6 +4,9 @@ import FilterFooter from '../FilterFooter'
 import styles from './index.module.scss'
 // 处理类名
 import classnames from 'classnames'
+// 动画效果
+import { Spring } from 'react-spring/renderprops'
+
 class FilterMore extends React.Component {
   // 封装一个方法
   renderSpan = v => {
@@ -58,14 +61,39 @@ class FilterMore extends React.Component {
     // 得到数据传递给父组件
     this.props.onPut(this.state.selectedValue)
   }
+  renderMask = () => {
+    // const { openType } = this.state
+    // let isShow = openType === 'more' ? false : true
+    // if (!isShow) return null
+    return (
+      <Spring from={{ opacity: 0 }} to={{ opacity: 1 }}>
+        {props => {
+          if (props.opacity === 0) {
+            return null
+          }
+          // console.log(this.props)
+
+          return (
+            <div
+              style={props}
+              className="mask"
+              onClick={this.props.onClickMask}
+            />
+          )
+        }}
+      </Spring>
+    )
+  }
   render() {
+    // const { openType } = this.state
     // console.log(this.props)
     const { roomType, oriented, floor, characteristic } = this.props
     return (
       <div className={styles['filter-more']}>
         {/* 遮罩层 */}
-        <div className="mask" onClick={this.props.onClickMask} />
+        {this.renderMask()}
         {/* 条件内容 */}
+
         <div className="tags">
           <dl className="dl">
             <dt className="dt">户型</dt>

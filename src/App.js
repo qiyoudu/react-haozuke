@@ -5,7 +5,7 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import Home from './pages/Home'
 import City from './pages/City/index'
 import Map from './pages/Map'
-
+import Detail from './pages/Detail'
 // 如何解决 警告
 import 'antd-mobile/dist/antd-mobile.css'
 import './index.scss'
@@ -19,6 +19,7 @@ class App extends Component {
           <Route path="/home" component={Home} />
           <Route path="/city" component={City} />
           <Route path="/map" component={Map} />
+          <Route path="/detail/:id" component={Detail} />
         </Switch>
       </>
     )

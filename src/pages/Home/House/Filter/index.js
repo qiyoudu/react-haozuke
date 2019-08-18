@@ -4,9 +4,16 @@ import FilterTitle from '../FilterTitle'
 import FilterPicker from '../FilterPicker'
 import FilterMore from '../FilterMore'
 import { API, getCurrentCity } from '../../../../utils'
+import { Spring } from 'react-spring/renderprops'
+
 // // 侧边栏 数据放在父组件中统一管理
 // // import FilterMore from '../FilterMore'
 class Filter extends React.Component {
+  constructor(props) {
+    super(props)
+    this.moreRef = React.createRef()
+    // console.log(this.moreRef)
+  }
   // 提供高亮状态
   state = {
     // 控制标题的选择状态
@@ -37,6 +44,10 @@ class Filter extends React.Component {
     this.getFiltersData()
   }
   changeStatus = type => {
+    // console.log(type)
+    if (type === 'more') {
+      console.log(this.moreRef)
+    }
     const { titleSelectedStatus, selectedValues } = this.state
     let newTitleSelectedStatus = { ...titleSelectedStatus }
     // 循环的结果 点击mode时 样式=> {area:false,mode:true,price:false,more:false}
@@ -168,8 +179,13 @@ class Filter extends React.Component {
     window.scrollTo(0, 0)
   }
   onClickMask = () => {
+    this.state.overflow = ''
     // console.log(1)
-    // 执行隐藏组件
+    // 执行隐藏组件 为什么直接修改不了呢?
+    // document.body.style.overflow = '??'
+    // ?
+    // console.log(document.body.style.overflow)
+
     this.setState({
       openType: ''
     })
@@ -186,6 +202,8 @@ class Filter extends React.Component {
 
     if (openType === 'more') {
       return (
+        // console.log(props)
+
         <FilterMore
           defaultValue={selectedValues['more']}
           {...data}
@@ -201,11 +219,19 @@ class Filter extends React.Component {
     // 有mask的时候让 body overflow hidden 不能滚动
     document.body.style.overflow = this.state.overflow
     const { openType } = this.state
-    return openType === 'area' ||
-      openType === 'mode' ||
-      openType === 'price' ? (
-      <div className="mask" onClick={this.onCancel} />
-    ) : null
+
+    let isShow = openType === '' || openType === 'more' ? true : false
+    //  from属性不用关注 可以使用to来控制 显示和隐藏时有动画效果
+    return (
+      <Spring to={{ opacity: isShow ? 0 : 1 }}>
+        {props => {
+          // console.log(props)
+
+          if (props.opacity === 0) return null
+          return <div style={props} className="mask" onClick={this.onCancel} />
+        }}
+      </Spring>
+    )
   }
   render() {
     const { titleSelectedStatus } = this.state

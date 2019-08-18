@@ -119,7 +119,9 @@ class House extends React.Component {
     }
     return <HouseItem key={key} e={item} style={style} />
   }
-
+  fn = () => {
+    console.log(1)
+  }
   isRowLoaded({ index }) {
     // 判断list中index是否有对应的数据  返回一一个布尔值
     return !!this.state.list[index]

@@ -11,7 +11,11 @@ import { withRouter } from 'react-router-dom'
 class NavHeader extends React.Component {
   // 传入的children值校验
   static propTypes = {
-    children: PropTypes.string.isRequired
+    children: PropTypes.string.isRequired,
+    backgroundColor: PropTypes.string
+  }
+  static defaultProps = {
+    backgroundColor: 'white'
   }
   render() {
     return (
